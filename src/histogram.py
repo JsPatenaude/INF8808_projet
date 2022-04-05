@@ -21,7 +21,7 @@ def get_dominant_colors(img_path):
         img = cv2.imread(img_file)
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         img = cv2.resize(img,(IMG_SIZE, IMG_SIZE))
-
+        
         # Average color
         avg_colors = np.average(np.average(img, axis=0), axis=0)
         int_averages = np.array(avg_colors, dtype=np.uint8)
@@ -40,6 +40,7 @@ def cluster_colors(all_dominant_colors, n_clusters):
     r = []
     g = []
     b = []
+
     for color in all_dominant_colors:
         r_value, g_value, b_value = color
         r.append(float(r_value))
@@ -48,30 +49,29 @@ def cluster_colors(all_dominant_colors, n_clusters):
     
     df = pd.DataFrame({'Red': r, 'Green': g, 'Blue' : b})
 
-
-    # cluster_centers, _ = kmeans(df[['scaled_r','scaled_g', 'scaled_b']], n_clusters)
     cluster_centers_colors, _ = kmeans(df[['Red','Green', 'Blue']], n_clusters)
     print(cluster_centers_colors)
-
 
     kmeans_model = KMeans(n_clusters, random_state=1).fit(df)
     df['cluster_label'] = kmeans_model.labels_
 
     return df, cluster_centers_colors
 
-    # for color in cluster_centers_colors:
-    #     dominant_color_img = np.zeros((IMG_SIZE, IMG_SIZE, 3), np.uint8)
-    #     color = tuple(reversed(color))
-    #     dominant_color_img[:] = color
 
-    #     plt.subplot(1,2,2)
-    #     plt.imshow(dominant_color_img)
-    #     plt.title('Dominant Color')
-    #     plt.show()
+
+def get_histogram_figure():
+    all_dominant_colors = get_dominant_colors(str(IMG_PATH))
+    df, clusters = cluster_colors(all_dominant_colors, N_CLUSTERS)
+
+    fig = px.histogram(df, x='cluster_label')
+
+    # TODO add colors from clusters
+
+    return fig
 
 
 
 if __name__ == "__main__":
     all_dominant_colors = get_dominant_colors(str(IMG_PATH))
-    clusters = cluster_colors(all_dominant_colors, N_CLUSTERS)
+    df, clusters = cluster_colors(all_dominant_colors, N_CLUSTERS)
 

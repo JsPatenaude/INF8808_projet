@@ -14,10 +14,12 @@
 import dash
 import dash_html_components as html
 import pandas as pd
+import bubble_chart
 
 df = pd.read_csv('../data/data.csv')
 
 df_short = df.head(1000)
+bubble_chart.get_bubble_figure(df_short)
 
 df_most_followers = df
 
