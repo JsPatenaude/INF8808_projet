@@ -50,7 +50,6 @@ def cluster_colors(all_dominant_colors, n_clusters):
     df = pd.DataFrame({'Red': r, 'Green': g, 'Blue' : b})
 
     cluster_centers_colors, _ = kmeans(df[['Red','Green', 'Blue']], n_clusters)
-    print(cluster_centers_colors)
 
     kmeans_model = KMeans(n_clusters, random_state=1).fit(df)
     df['cluster_label'] = kmeans_model.labels_

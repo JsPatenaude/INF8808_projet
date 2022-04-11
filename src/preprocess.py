@@ -1,5 +1,4 @@
 import pandas as pd
-import time
 from collections import Counter
 
 # compte,nom,followers,cree,date,time,type,likes,comm,vues,url,desc
@@ -42,7 +41,7 @@ class PreprocessBubble(PreprocessAbstract):
             if isinstance(desc, str):
                 for hashtag in most_common_hastags:
                     if hashtag in desc:
-
+                        pass
 
         return df
 
