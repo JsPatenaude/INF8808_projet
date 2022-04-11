@@ -5,3 +5,6 @@ def create_scatter_by_type():
 
 def create_scatter_by_hashtags():
     pass
+
+def get_figure(df):
+    pass

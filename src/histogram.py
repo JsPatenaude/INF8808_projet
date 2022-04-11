@@ -58,7 +58,7 @@ def cluster_colors(all_dominant_colors, n_clusters):
 
 
 
-def get_histogram_figure():
+def get_figure(df):
     all_dominant_colors = get_dominant_colors(str(IMG_PATH))
     df, clusters = cluster_colors(all_dominant_colors, N_CLUSTERS)
 

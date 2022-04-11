@@ -43,7 +43,7 @@ app.layout = html.Div(className='content', children=[
         ]),
         html.Div(id='bubble-div', style={'display': 'block'}, children=[
             html.H1('Bubble'),
-            dcc.Graph(className='bubble-chart', figure=histogram.get_histogram_figure(), config=dict(
+            dcc.Graph(className='bubble-chart', figure=bubble_chart.get_figure(df_short), config=dict(
                 scrollZoom=False,
                 showTips=False,
                 showAxisDragHandles=False,
@@ -54,7 +54,7 @@ app.layout = html.Div(className='content', children=[
         ]),
         html.Div(id='heatmap-div', style={'display': 'none'}, children=[
             html.H1('Heatmap'),
-            dcc.Graph(className='heatmap-chart', figure=None, config=dict(
+            dcc.Graph(className='heatmap-chart', figure=heatmap.get_figure(df_short), config=dict(
                 scrollZoom=False,
                 showTips=False,
                 showAxisDragHandles=False,
@@ -65,7 +65,7 @@ app.layout = html.Div(className='content', children=[
         ]),
         html.Div(id='scatter-div', style={'display': 'none'}, children=[
             html.H1('Scatter'),
-            dcc.Graph(className='scatter-chart', figure=None, config=dict(
+            dcc.Graph(className='scatter-chart', figure=scatter.get_figure(df_short), config=dict(
                 scrollZoom=False,
                 showTips=False,
                 showAxisDragHandles=False,
@@ -76,7 +76,7 @@ app.layout = html.Div(className='content', children=[
         ]),
         html.Div(id='histogram-div', style={'display': 'none'}, children=[
             html.H1('Histogram'),
-            dcc.Graph(className='histogram-chart', figure=histogram.get_histogram_figure(), config=dict(
+            dcc.Graph(className='histogram-chart', figure=histogram.get_figure(df_short), config=dict(
             scrollZoom=False,
             showTips=False,
             showAxisDragHandles=False,

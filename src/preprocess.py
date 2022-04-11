@@ -33,9 +33,7 @@ class PreprocessBubble(PreprocessAbstract):
         counter = Counter(all_hashtags)
         most_common_hastags = counter.most_common(50)
 
-
-
-
+        return df
 
         for desc in df['desc']:
             if isinstance(desc, str):
@@ -43,7 +41,7 @@ class PreprocessBubble(PreprocessAbstract):
                     if hashtag in desc:
                         pass
 
-        return df
+        
 
 
 class PreprocessHeatmap(PreprocessAbstract):
