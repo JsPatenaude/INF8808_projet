@@ -23,7 +23,7 @@ import histogram
 
 df = pd.read_csv('../data/data.csv')
 
-df_short = df.head(1000)
+df_short = df.head(10000)
 
 df_most_followers = df
 
@@ -33,7 +33,7 @@ app.title = 'Projet | INF8808'
 
 app.layout = html.Div(className='content', children=[
     html.Header(children=[
-        html.H1('Hello World'),
+        html.H1('Comment maximiser son rendement en tant que micro-influenceur sur Instagram'),
     ]),
     html.Main(className='viz-container', children=[
         html.Div(className='selector-buttons', children=[
@@ -43,7 +43,7 @@ app.layout = html.Div(className='content', children=[
             html.Button('Histogram', id='histogram-button'),
         ]),
         html.Div(id='bubble-div', style={'display': 'block'}, children=[
-            html.H1('Bubble'),
+            html.H1('Popularité de différent hashtags par rapport au nombre de likes, commentaires et followers générés'),
             dcc.Graph(id='bubble-chart', figure=bubble_chart.get_figure(df_short), config=dict(
                 scrollZoom=False,
                 showTips=False,
@@ -54,8 +54,8 @@ app.layout = html.Div(className='content', children=[
             )
         ]),
         html.Div(id='heatmap-div', style={'display': 'none'}, children=[
-            html.H1('Heatmap'),
-            dcc.Graph(id='heatmap-chart', figure=heatmap.get_figure(df_short), config=dict(
+            html.H1('Carte de chaleur de likes par rapport au jour de la semaine et heure de la journée'),
+            dcc.Graph(id='heatmap-chart', figure=heatmap.get_figure(df), config=dict(
                 scrollZoom=False,
                 showTips=False,
                 showAxisDragHandles=False,
@@ -65,7 +65,7 @@ app.layout = html.Div(className='content', children=[
             )
         ]),
         html.Div(id='scatter-div', style={'display': 'none'}, children=[
-            html.H1('Scatter'),
+            html.H1('Nombre de likes par rapport à la longueur de la description pour différent type de publication'),
             daq.BooleanSwitch(id='scatter-select', on=False),
             html.Div(id='scatter-chart-type-div', style={'display': 'block'}, children=[
                 dcc.Graph(id='scatter-chart-type', figure=scatter.get_figure_type(df_short), config=dict(
@@ -89,7 +89,7 @@ app.layout = html.Div(className='content', children=[
             ])     
         ]),
         html.Div(id='histogram-div', style={'display': 'none'}, children=[
-            html.H1('Histogram'),
+            html.H1('Couleur populaire à mettre dans ses photos Instagram'),
             dcc.Graph(id='histogram-chart', figure=histogram.get_figure(df_short), config=dict(
             scrollZoom=False,
             showTips=False,

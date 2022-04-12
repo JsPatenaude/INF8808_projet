@@ -1,10 +1,10 @@
 import cv2
-import numpy as np
 import glob
-import matplotlib.pyplot as plt
 import numpy as np
-from scipy.cluster.vq import kmeans, whiten
+
+from scipy.cluster.vq import kmeans
 from sklearn.cluster import KMeans
+
 import pandas as pd
 import plotly.express as px
 
@@ -61,13 +61,20 @@ def cluster_colors(all_dominant_colors, n_clusters):
 def get_figure(df):
     all_dominant_colors = get_dominant_colors(str(IMG_PATH))
     df, clusters = cluster_colors(all_dominant_colors, N_CLUSTERS)
+    colors = [f'rgb({int(color[0])}, {int(color[1])}, {int(color[2])})' for color in clusters]
+    
 
-    fig = px.histogram(df, x='cluster_label')
+    df['color'] = ''
+    for i, row in df.iterrows():
+        color = colors[row['cluster_label']]
+        df.at[i, 'color'] = color
+    df = df.sort_values('cluster_label')
+    fig = px.histogram(df, x='color')
+    fig.update_traces(marker_color=colors)
 
     # TODO add colors from clusters
 
     return fig
-
 
 
 if __name__ == "__main__":
