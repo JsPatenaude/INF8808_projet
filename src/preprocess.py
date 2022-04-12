@@ -1,5 +1,6 @@
 import pandas as pd
 from collections import Counter
+from datetime import datetime
 
 # compte,nom,followers,cree,date,time,type,likes,comm,vues,url,desc
 
@@ -48,16 +49,36 @@ class PreprocessHeatmap(PreprocessAbstract):
     def __init__(self):
         pass
 
+    def preprocess_heatmap(self, df):
+        heatmap_df = df[['likes', 'date', 'time']]
+        heatmap_df['weekday'] = [datetime.strptime(str(date), '%Y-%m-%d').strftime('%A') for date in heatmap_df['date']]
+        heatmap_df['hour'] = pd.to_datetime(heatmap_df['time'], format='%H:%M:%S').dt.hour
+        heatmap_df = heatmap_df.pivot_table(values='likes', index=['hour'], columns=['weekday']).fillna(0)
+
+        return heatmap_df
+
 
 class PreprocessScatter(PreprocessAbstract):
     def __init__(self):
         pass
     
-    def preprocess_type():
-        pass
+    def preprocess_type(self, df):
+        df_types = df[df['type'].isin(['Photo', 'Album', 'Video'])]
+        df_types['desc_length'] = df_types['desc'].str.len()
+        return df_types[['likes', 'desc_length', 'type']]
+        
+    def preprocess_hashtags(self, df):
+        df['desc_length'] = df['desc'].str.len()
+        n_hashtags = []
+        for desc in df['desc']:
+            if isinstance(desc, str):
+                hashtags = [word for word in desc.split() if word.startswith('#')]
+                n_hashtags.append(len(hashtags))
+            else:
+                n_hashtags.append(0)
 
-    def preprocess_hashtags():
-        pass
+        df['n_hashtags'] = n_hashtags
+        return df[['likes', 'desc_length', 'n_hashtags']]
 
 
 class PreprocessHistogram(PreprocessAbstract):
@@ -66,7 +87,7 @@ class PreprocessHistogram(PreprocessAbstract):
 
     def printPostImages(self, df):
         # This function is useful to print the URLs of posts so we can manually download images
-        # (because it is illegal (scary 😱😱😱) to webscrap images from Instagram)
+        # (because it is illegal to webscrap images from Instagram)
         df_most_likes = df.sort_values('likes').head(100)
         all_images_url = df_most_likes['url']
         for i, url in enumerate(all_images_url):

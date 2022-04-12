@@ -12,6 +12,7 @@
 '''
 
 from dash import Dash, dcc, html, Input, Output, callback_context
+import dash_daq as daq
 
 import pandas as pd
 
@@ -43,7 +44,7 @@ app.layout = html.Div(className='content', children=[
         ]),
         html.Div(id='bubble-div', style={'display': 'block'}, children=[
             html.H1('Bubble'),
-            dcc.Graph(className='bubble-chart', figure=bubble_chart.get_figure(df_short), config=dict(
+            dcc.Graph(id='bubble-chart', figure=bubble_chart.get_figure(df_short), config=dict(
                 scrollZoom=False,
                 showTips=False,
                 showAxisDragHandles=False,
@@ -54,7 +55,7 @@ app.layout = html.Div(className='content', children=[
         ]),
         html.Div(id='heatmap-div', style={'display': 'none'}, children=[
             html.H1('Heatmap'),
-            dcc.Graph(className='heatmap-chart', figure=heatmap.get_figure(df_short), config=dict(
+            dcc.Graph(id='heatmap-chart', figure=heatmap.get_figure(df_short), config=dict(
                 scrollZoom=False,
                 showTips=False,
                 showAxisDragHandles=False,
@@ -65,7 +66,9 @@ app.layout = html.Div(className='content', children=[
         ]),
         html.Div(id='scatter-div', style={'display': 'none'}, children=[
             html.H1('Scatter'),
-            dcc.Graph(className='scatter-chart', figure=scatter.get_figure(df_short), config=dict(
+            daq.BooleanSwitch(id='scatter-select', on=False),
+            html.Div(id='scatter-chart-type-div', style={'display': 'block'}, children=[
+                dcc.Graph(id='scatter-chart-type', figure=scatter.get_figure_type(df_short), config=dict(
                 scrollZoom=False,
                 showTips=False,
                 showAxisDragHandles=False,
@@ -73,10 +76,21 @@ app.layout = html.Div(className='content', children=[
                 displayModeBar=False
                 )
             )
+            ]),
+            html.Div(id='scatter-chart-hashtag-div', style={'display': 'none'}, children=[
+                dcc.Graph(id='scatter-chart-hashtag', figure=scatter.get_figure_hashtag(df_short), config=dict(
+                scrollZoom=False,
+                showTips=False,
+                showAxisDragHandles=False,
+                doubleClick=False,
+                displayModeBar=False
+                )
+            )
+            ])     
         ]),
         html.Div(id='histogram-div', style={'display': 'none'}, children=[
             html.H1('Histogram'),
-            dcc.Graph(className='histogram-chart', figure=histogram.get_figure(df_short), config=dict(
+            dcc.Graph(id='histogram-chart', figure=histogram.get_figure(df_short), config=dict(
             scrollZoom=False,
             showTips=False,
             showAxisDragHandles=False,
@@ -120,3 +134,16 @@ def selector_button_clicked(bubble_button, heatmap_button, scatter_button, histo
         histogram_style = {'display': 'block'}
 
     return bubble_style, heatmap_style, scatter_style, histogram_style
+
+
+@app.callback(
+    Output('scatter-chart-type-div', 'style'),
+    Output('scatter-chart-hashtag-div', 'style'),
+    Input('scatter-select', 'on')
+)
+def select_scatter_type(value):
+    if value:
+        return {'display': 'none'}, {'display': 'block'}
+    else:
+        return {'display': 'block'}, {'display': 'none'}
+    
