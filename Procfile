@@ -1,1 +1,1 @@
-web: gunicorn src/server:create_app
+web: gunicorn server:create_app
