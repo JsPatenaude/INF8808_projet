@@ -29,6 +29,7 @@ df_most_followers = df
 
 app = Dash(__name__)
 app.title = 'Projet | INF8808'
+server = app.server
 
 
 app.layout = html.Div(className='content', children=[
@@ -146,4 +147,7 @@ def select_scatter_type(value):
         return {'display': 'none'}, {'display': 'block'}
     else:
         return {'display': 'block'}, {'display': 'none'}
-    
+
+
+if __name__ == '__main__':
+    app.run_server()
