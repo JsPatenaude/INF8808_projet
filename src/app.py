@@ -11,6 +11,7 @@
     Python Version: 3.8
 '''
 
+from cv2 import DFT_REAL_OUTPUT
 from dash import Dash, dcc, html, Input, Output, callback_context
 import dash_daq as daq
 
@@ -23,7 +24,7 @@ import histogram
 
 df = pd.read_csv('../data/data.csv')
 
-df_short = df.head(10000)
+df_short = df.head(25000)
 
 df_most_followers = df
 
@@ -31,20 +32,20 @@ app = Dash(__name__)
 app.title = 'Projet | INF8808'
 server = app.server
 
-
 app.layout = html.Div(className='content', children=[
-    html.Header(children=[
-        html.H1('Comment maximiser son rendement en tant que micro-influenceur sur Instagram'),
+    html.Header(style={'display': 'flex', 'flex-direction': 'row', 'justify-content': 'center', 'gap': '1%', 'flex-wrap': 'wrap'}, children=[
+        html.H1('Comment maximiser son rendement en tant que micro-influenceur sur'),
+        html.Img(src='assets/instagram_logo.png', style={'width': '220px', 'height': '100px'})
     ]),
-    html.Main(className='viz-container', children=[
-        html.Div(className='selector-buttons', children=[
-            html.Button('Bubble', id='bubble-button'),
-            html.Button('Heatmap', id='heatmap-button'),
-            html.Button('Scatter', id='scatter-button'),
-            html.Button('Histogram', id='histogram-button'),
+    html.Main(className='viz-container', style={'margin-left': '20%', 'margin-right': '20%'}, children=[
+        html.Div(className='selector-buttons', style={'display': 'flex', 'flex-direction': 'row', 'justify-content': 'center', 'gap': '2%'}, children=[
+            html.Button('Graphique à bulles', id='bubble-button'),
+            html.Button('Carte de chaleur', id='heatmap-button'),
+            html.Button('Nuage de points', id='scatter-button'),
+            html.Button('Histogramme', id='histogram-button'),
         ]),
         html.Div(id='bubble-div', style={'display': 'block'}, children=[
-            html.H1('Popularité de différent hashtags par rapport au nombre de likes, commentaires et followers générés'),
+            html.H2('Popularité de différents hashtags par rapport au nombre de likes, commentaires et followers générés'),
             dcc.Graph(id='bubble-chart', figure=bubble_chart.get_figure(df_short), config=dict(
                 scrollZoom=False,
                 showTips=False,
@@ -55,8 +56,8 @@ app.layout = html.Div(className='content', children=[
             )
         ]),
         html.Div(id='heatmap-div', style={'display': 'none'}, children=[
-            html.H1('Carte de chaleur de likes par rapport au jour de la semaine et heure de la journée'),
-            dcc.Graph(id='heatmap-chart', figure=heatmap.get_figure(df), config=dict(
+            html.H2('Carte de chaleur de likes par rapport au jour de la semaine et heure de la journée'),
+            dcc.Graph(id='heatmap-chart', figure=heatmap.get_figure(df_short), config=dict(
                 scrollZoom=False,
                 showTips=False,
                 showAxisDragHandles=False,
@@ -66,8 +67,12 @@ app.layout = html.Div(className='content', children=[
             )
         ]),
         html.Div(id='scatter-div', style={'display': 'none'}, children=[
-            html.H1('Nombre de likes par rapport à la longueur de la description pour différent type de publication'),
-            daq.BooleanSwitch(id='scatter-select', on=False),
+            html.H2('Nombre de likes par rapport à la longueur de la description pour différents types de publication'),
+            html.Div(style={'display': 'flex', 'flex-direction': 'row', 'justify-content': 'center', 'gap': '5%'}, children=[
+                html.Span('Type de publication'),
+                daq.BooleanSwitch(id='scatter-select', on=False),
+                html.Span('Nombre de hashtags'),
+            ]),
             html.Div(id='scatter-chart-type-div', style={'display': 'block'}, children=[
                 dcc.Graph(id='scatter-chart-type', figure=scatter.get_figure_type(df_short), config=dict(
                 scrollZoom=False,
@@ -90,7 +95,7 @@ app.layout = html.Div(className='content', children=[
             ])     
         ]),
         html.Div(id='histogram-div', style={'display': 'none'}, children=[
-            html.H1('Couleur populaire à mettre dans ses photos Instagram'),
+            html.H2('Couleur les plus populaires sur les photos Instagram'),
             dcc.Graph(id='histogram-chart', figure=histogram.get_figure(df_short), config=dict(
             scrollZoom=False,
             showTips=False,

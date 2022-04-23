@@ -1,6 +1,7 @@
 import cv2
 import glob
 import numpy as np
+import collections
 
 from scipy.cluster.vq import kmeans
 from sklearn.cluster import KMeans
@@ -63,21 +64,33 @@ def get_figure(df):
     df, clusters = cluster_colors(all_dominant_colors, N_CLUSTERS)
     colors = [f'rgb({int(color[0])}, {int(color[1])}, {int(color[2])})' for color in clusters]
     
-
     df['color'] = ''
     for i, row in df.iterrows():
         color = colors[row['cluster_label']]
         df.at[i, 'color'] = color
     df = df.sort_values('cluster_label')
+
+    hover_template = \
+    '''
+    <b style="font-size: 20px;">%{x}</b>
+    <br>
+    <br>
+    <b style="font-size: 16px;">Occurences: </b><span style="font-size: 16px;">%{y}</span> 
+    <extra></extra>
+    '''
+
     fig = px.histogram(df, x='color')
-    fig.update_traces(marker_color=colors)
-
-    # TODO add colors from clusters
-
+    fig.update_layout(
+        xaxis_title='Couleur RGB',
+        yaxis_title='Nombre d\'images ayant cette couleur dominante',
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(0,0,0,0)'
+    )
+    fig.update_xaxes(categoryorder='total descending', showgrid=False)
+    fig.update_yaxes(showgrid=False)
+    color_count = collections.Counter(fig['data'][0]['x']).most_common()
+    colors_sorted = [color[0] for color in color_count] 
+    fig.update_traces(marker_color=colors_sorted, hovertemplate=hover_template)
+    
     return fig
-
-
-if __name__ == "__main__":
-    all_dominant_colors = get_dominant_colors(str(IMG_PATH))
-    df, clusters = cluster_colors(all_dominant_colors, N_CLUSTERS)
 

@@ -74,7 +74,19 @@ class PreprocessHeatmap(PreprocessAbstract):
     def preprocess_heatmap(self, df):
         heatmap_df = df[['likes', 'date', 'time']]
         heatmap_df = heatmap_df.dropna()
-        heatmap_df['weekday'] = [datetime.strptime(str(date), '%Y-%m-%d').strftime('%A') for date in heatmap_df['date']]
+        weekday_translation = {
+            'Monday': 'Lundi',
+            'Tuesday': 'Mardi',
+            'Wednesday': 'Mercredi',
+            'Thursday': 'Jeudi',
+            'Friday': 'Vendredi',
+            'Saturday': 'Samedi',
+            'Sunday': 'Dimanche'
+        }
+        weekday_sort = weekday_translation.values()
+        heatmap_df['weekday'] = [weekday_translation[datetime.strptime(str(date), '%Y-%m-%d').strftime('%A')] for date in heatmap_df['date']]
+        heatmap_df['weekday'] = pd.Categorical(heatmap_df['weekday'], categories=weekday_sort, ordered=True)
+        heatmap_df = heatmap_df.sort_values('weekday')
         heatmap_df['hour'] = pd.to_datetime(heatmap_df['time'], format='%H:%M:%S').dt.hour
         heatmap_df = heatmap_df.pivot_table(values='likes', index=['hour'], columns=['weekday']).fillna(0)
 
